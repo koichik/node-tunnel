@@ -1,0 +1,29 @@
+{
+  "name": "tunnel",
+  "version": "0.0.0-pre",
+  "description": "Node HTTP/HTTPS Agents for tunneling proxies",
+  "keywords": [
+    "http",
+    "https",
+    "agent",
+    "proxy"
+  ],
+  "homepage": "http://github.com/koichik/node-tunnel/",
+  "author": "Koichi Kobayashi <koichik@improvement.jp>",
+  "main": "./index.js",
+  "licenses": {
+    "type": "The MIT License",
+    "url": "http://www.opensource.org/licenses/mit-license.php"
+  },
+  "repositories": "https://github.com/koichik/node-tunnel.git",
+  "engines": {
+    "node": ">=0.7"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  }
+}
