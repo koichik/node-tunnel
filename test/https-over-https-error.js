@@ -63,7 +63,6 @@ describe('HTTPS over HTTPS authentication failed', function() {
             port: serverPort,
             agent: agent
           }, function(res) {
-            console.log('Client got response');
             ++clientConnect;
             req.emit('finish');
           });
