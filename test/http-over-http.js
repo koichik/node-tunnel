@@ -26,6 +26,8 @@ describe('HTTP over HTTP', function() {
       proxy.on('connect', function(req, clientSocket, head) {
         req.method.should.equal('CONNECT');
         req.url.should.equal('localhost:' + serverPort);
+        req.headers.should.have.property('proxy-authorization',
+            'Basic ' + new Buffer('user:password').toString('base64'));
         ++proxyConnect;
     
         var serverSocket = net.connect(serverPort, function() {
@@ -43,7 +45,8 @@ describe('HTTP over HTTP', function() {
         agent = tunnel.httpOverHttp({
           maxSockets: poolSize,
           proxy: {
-            port: proxyPort
+            port: proxyPort,
+            proxyAuth: 'user:password'
           }
         });
     
