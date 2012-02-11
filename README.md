@@ -14,7 +14,7 @@
     var req = https.request({
       host: 'example.com',
       port: 443,
-      agent = myAgent
+      agent: myAgent
     });
 
 ## Installation
