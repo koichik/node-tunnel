@@ -1,6 +1,6 @@
 {
   "name": "tunnel",
-  "version": "0.0.0",
+  "version": "0.0.1-pre",
   "description": "Node HTTP/HTTPS Agents for tunneling proxies",
   "keywords": [
     "http",
