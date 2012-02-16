@@ -25,7 +25,7 @@
 
 ### HTTP over HTTP tunneling
 
-    var agent = tunnel.httpOverHttp({
+    var myAgent = tunnel.httpOverHttp({
       maxSockets: poolSize, // Defaults to 5
 
       proxy: { // Proxy settings
@@ -50,7 +50,7 @@
 
 ### HTTPS over HTTP tunneling
 
-    var agent = tunnel.httpsOverHttp({
+    var myAgent = tunnel.httpsOverHttp({
       maxSockets: poolSize, // Defaults to 5
 
       // CA for origin server if necessary
@@ -82,7 +82,7 @@
 
 ### HTTP over HTTPS tunneling
 
-    var agent = tunnel.httpOverHttps({
+    var myAgent = tunnel.httpOverHttps({
       maxSockets: poolSize, // Defaults to 5
 
       proxy: { // Proxy settings
@@ -114,7 +114,7 @@
 
 ### HTTPS over HTTPS tunneling
 
-    var agent = tunnel.httpsOverHttps({
+    var myAgent = tunnel.httpsOverHttps({
       maxSockets: poolSize, // Defaults to 5
 
       // CA for origin server if necessary
