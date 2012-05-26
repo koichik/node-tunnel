@@ -99,8 +99,8 @@ describe('HTTP over HTTP', function() {
       proxyConnect.should.equal(poolSize);
       clientConnect.should.equal(N);
     
-      agent.sockets.should.have.lengthOf(0);
-      agent.requests.should.have.lengthOf(0);
+      agent.sockets.should.be.empty;
+      agent.requests.should.be.empty;
   
       done();
     });

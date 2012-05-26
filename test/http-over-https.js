@@ -113,8 +113,8 @@ describe('HTTP over HTTPS', function() {
       clientConnect.should.equal(N);
 
       var name = 'localhost:' + serverPort;
-      agent.sockets.should.not.have.ownProperty(name);
-      agent.requests.should.not.have.ownProperty(name);
+      agent.sockets.should.be.empty;
+      agent.requests.should.be.empty;
 
       done();
     });
