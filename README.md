@@ -2,20 +2,22 @@
 
 ## Example
 
-    var tunnel = require('tunnel');
+```javascript
+var tunnel = require('tunnel');
 
-    var myAgent = tunnel.httpsOverHttp({
-      proxy: {
-        host: 'localhost',
-        port: 3128
-      }
-    });
+var tunnelingAgent = tunnel.httpsOverHttp({
+  proxy: {
+    host: 'localhost',
+    port: 3128
+  }
+});
 
-    var req = https.request({
-      host: 'example.com',
-      port: 443,
-      agent: myAgent
-    });
+var req = https.request({
+  host: 'example.com',
+  port: 443,
+  agent: tunnelingAgent
+});
+```
 
 ## Installation
 
@@ -25,128 +27,146 @@
 
 ### HTTP over HTTP tunneling
 
-    var myAgent = tunnel.httpOverHttp({
-      maxSockets: poolSize, // Defaults to 5
+```javascript
+var tunnelingAgent = tunnel.httpOverHttp({
+  maxSockets: poolSize, // Defaults to 5
 
-      proxy: { // Proxy settings
-        host: proxyHost, // Defaults to 'localhost'
-        port: proxyPort, // Defaults to 80
+  proxy: { // Proxy settings
+    host: proxyHost, // Defaults to 'localhost'
+    port: proxyPort, // Defaults to 80
+    localAddress: localAddress, // Local interface if necessary
 
-        // Basic authorization for proxy server if necessary
-        proxyAuth: 'user:password',
+    // Basic authorization for proxy server if necessary
+    proxyAuth: 'user:password',
 
-        // Header fields for proxy server if necessary
-        headers: {
-          'User-Agent': 'Node'
-        }
-      }
-    });
+    // Header fields for proxy server if necessary
+    headers: {
+      'User-Agent': 'Node'
+    }
+  }
+});
 
-    var req = http.request({
-      host: 'example.com',
-      port: 80,
-      agent: myAgent
-    });
+var req = http.request({
+  host: 'example.com',
+  port: 80,
+  agent: tunnelingAgent
+});
+```
 
 ### HTTPS over HTTP tunneling
 
-    var myAgent = tunnel.httpsOverHttp({
-      maxSockets: poolSize, // Defaults to 5
+```javascript
+var tunnelingAgent = tunnel.httpsOverHttp({
+  maxSockets: poolSize, // Defaults to 5
 
-      // CA for origin server if necessary
-      ca: [ fs.readFileSync('origin-server-ca.pem')],
+  // CA for origin server if necessary
+  ca: [ fs.readFileSync('origin-server-ca.pem')],
 
-      // Client certification for origin server if necessary
-      key: fs.readFileSync('origin-server-key.pem'),
-      cert: fs.readFileSync('origin-server-cert.pem'),
+  // Client certification for origin server if necessary
+  key: fs.readFileSync('origin-server-key.pem'),
+  cert: fs.readFileSync('origin-server-cert.pem'),
 
-      proxy: { // Proxy settings
-        host: proxyHost, // Defaults to 'localhost'
-        port: proxyPort, // Defaults to 80
+  proxy: { // Proxy settings
+    host: proxyHost, // Defaults to 'localhost'
+    port: proxyPort, // Defaults to 80
+    localAddress: localAddress, // Local interface if necessary
 
-        // Basic authorization for proxy server if necessary
-        proxyAuth: 'user:password',
+    // Basic authorization for proxy server if necessary
+    proxyAuth: 'user:password',
 
-        // Header fields for proxy server if necessary
-        headers: {
-          'User-Agent': 'Node'
-        },
-      }
-    });
+    // Header fields for proxy server if necessary
+    headers: {
+      'User-Agent': 'Node'
+    },
+  }
+});
 
-    var req = https.request({
-      host: 'example.com',
-      port: 443,
-      agent: myAgent
-    });
+var req = https.request({
+  host: 'example.com',
+  port: 443,
+  agent: tunnelingAgent
+});
+```
 
 ### HTTP over HTTPS tunneling
 
-    var myAgent = tunnel.httpOverHttps({
-      maxSockets: poolSize, // Defaults to 5
+```javascript
+var tunnelingAgent = tunnel.httpOverHttps({
+  maxSockets: poolSize, // Defaults to 5
 
-      proxy: { // Proxy settings
-        host: proxyHost, // Defaults to 'localhost'
-        port: proxyPort, // Defaults to 443
+  proxy: { // Proxy settings
+    host: proxyHost, // Defaults to 'localhost'
+    port: proxyPort, // Defaults to 443
+    localAddress: localAddress, // Local interface if necessary
 
-        // Basic authorization for proxy server if necessary
-        proxyAuth: 'user:password',
+    // Basic authorization for proxy server if necessary
+    proxyAuth: 'user:password',
 
-        // Header fields for proxy server if necessary
-        headers: {
-          'User-Agent': 'Node'
-        },
+    // Header fields for proxy server if necessary
+    headers: {
+      'User-Agent': 'Node'
+    },
 
-        // CA for proxy server if necessary
-        ca: [ fs.readFileSync('origin-server-ca.pem')],
+    // CA for proxy server if necessary
+    ca: [ fs.readFileSync('origin-server-ca.pem')],
 
-        // Client certification for proxy server if necessary
-        key: fs.readFileSync('origin-server-key.pem'),
-        cert: fs.readFileSync('origin-server-cert.pem'),
-      }
-    });
+    // Server name for verification if necessary
+    servername: 'example.com',
 
-    var req = http.request({
-      host: 'example.com',
-      port: 80,
-      agent: myAgent
-    });
+    // Client certification for proxy server if necessary
+    key: fs.readFileSync('origin-server-key.pem'),
+    cert: fs.readFileSync('origin-server-cert.pem'),
+  }
+});
+
+var req = http.request({
+  host: 'example.com',
+  port: 80,
+  agent: tunnelingAgent
+});
+```
 
 ### HTTPS over HTTPS tunneling
 
-    var myAgent = tunnel.httpsOverHttps({
-      maxSockets: poolSize, // Defaults to 5
+```javascript
+var tunnelingAgent = tunnel.httpsOverHttps({
+  maxSockets: poolSize, // Defaults to 5
 
-      // CA for origin server if necessary
-      ca: [ fs.readFileSync('origin-server-ca.pem')],
+  // CA for origin server if necessary
+  ca: [ fs.readFileSync('origin-server-ca.pem')],
 
-      // Client certification for origin server if necessary
-      key: fs.readFileSync('origin-server-key.pem'),
-      cert: fs.readFileSync('origin-server-cert.pem'),
+  // Client certification for origin server if necessary
+  key: fs.readFileSync('origin-server-key.pem'),
+  cert: fs.readFileSync('origin-server-cert.pem'),
 
-      proxy: { // Proxy settings
-        host: proxyHost, // Defaults to 'localhost'
-        port: proxyPort, // Defaults to 443
+  proxy: { // Proxy settings
+    host: proxyHost, // Defaults to 'localhost'
+    port: proxyPort, // Defaults to 443
+    localAddress: localAddress, // Local interface if necessary
 
-        // Basic authorization for proxy server if necessary
-        proxyAuth: 'user:password',
+    // Basic authorization for proxy server if necessary
+    proxyAuth: 'user:password',
 
-        // Header fields for proxy server if necessary
-        headers: {
-          'User-Agent': 'Node'
-        }
+    // Header fields for proxy server if necessary
+    headers: {
+      'User-Agent': 'Node'
+    }
 
-        // CA for proxy server if necessary
-        ca: [ fs.readFileSync('origin-server-ca.pem')],
+    // CA for proxy server if necessary
+    ca: [ fs.readFileSync('origin-server-ca.pem')],
 
-        // Client certification for proxy server if necessary
-        key: fs.readFileSync('origin-server-key.pem'),
-        cert: fs.readFileSync('origin-server-cert.pem'),
-      }
-    });
+    // Server name for verification if necessary
+    servername: 'example.com',
 
-    var req = https.request({
-      host: 'example.com',
-      port: 443,
-      agent: myAgent
-    });
+    // Client certification for proxy server if necessary
+    key: fs.readFileSync('origin-server-key.pem'),
+    cert: fs.readFileSync('origin-server-cert.pem'),
+  }
+});
+
+var req = https.request({
+  host: 'example.com',
+  port: 443,
+  agent: tunnelingAgent
+});
+```
