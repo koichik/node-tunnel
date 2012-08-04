@@ -16,15 +16,16 @@ describe('HTTPS over HTTPS authentication failed', function() {
     var proxyPort = 3009;
     var serverConnect = 0;
     var proxyConnect = 0;
+    var clientRequest = 0;
     var clientConnect = 0;
     var clientError = 0;
     var server;
     var proxy;
 
     server = https.createServer({
-      key: readPem('agent2-key'),
-      cert: readPem('agent2-cert'),
-      ca: [ readPem('ca1-cert') ], // ca for agent1
+      key: readPem('agent1-key'), // agent1 is signed by ca1
+      cert: readPem('agent1-cert'),
+      ca: [ readPem('ca2-cert') ], // ca for agent3
       requestCert: true,
       rejectUnauthorized: true
     }, function(req, res) {
@@ -38,9 +39,9 @@ describe('HTTPS over HTTPS authentication failed', function() {
 
     function setupProxy() {
       proxy = https.createServer({
-        key: readPem('agent4-key'),
-        cert: readPem('agent4-cert'),
-        ca: [ readPem('ca2-cert') ], // ca for agent3
+        key: readPem('agent3-key'), // agent3 is signed by ca2
+        cert: readPem('agent3-cert'),
+        ca: [ readPem('ca1-cert') ], // ca for agent1
         requestCert: true,
         rejectUnauthorized: true
       }, function(req, res) {
@@ -71,11 +72,15 @@ describe('HTTPS over HTTPS authentication failed', function() {
     }
 
     function setupClient() {
-      function doRequest(name, options) {
+      function doRequest(name, options, host) {
         tunnel.debug('CLIENT: Making HTTPS request (%s)', name);
+        ++clientRequest;
         var agent = tunnel.httpsOverHttps(options);
         var req = https.get({
           port: serverPort,
+          headers: {
+            host: host ? host : 'localhost',
+          },
           agent: agent
         }, function(res) {
           tunnel.debug('CLIENT: got HTTPS response (%s)', name);
@@ -83,12 +88,12 @@ describe('HTTPS over HTTPS authentication failed', function() {
           req.emit('finish');
         });
         req.on('error', function(err) {
-          tunnel.debug('CLIENT: failed HTTP response (%s)', name);
+          tunnel.debug('CLIENT: failed HTTP response (%s)', name, err);
           ++clientError;
           req.emit('finish');
         });
         req.on('finish', function() {
-          if (clientConnect + clientError === 4) {
+          if (clientConnect + clientError === clientRequest) {
             proxy.close();
             server.close();
           }
@@ -97,51 +102,109 @@ describe('HTTPS over HTTPS authentication failed', function() {
 
       doRequest('no cert origin nor proxy', { // invalid
         maxSockets: 1,
+        ca: [ readPem('ca1-cert') ], // ca for origin server (agent1)
+        rejectUnauthorized: true,
         // no certificate for origin server
         proxy: {
-          port: proxyPort
+          port: proxyPort,
+          servername: 'agent3',
+          ca: [ readPem('ca2-cert') ], // ca for proxy server (agent3)
+          rejectUnauthorized: true
           // no certificate for proxy
         }
-      });
+      }, 'agent1');
+
       doRequest('no cert proxy', { // invalid
         maxSockets: 1,
+        ca: [ readPem('ca1-cert') ], // ca for origin server (agent1)
+        rejectUnauthorized: true,
         // client certification for origin server
-        key: readPem('agent1-key'),
-        cert: readPem('agent1-cert'),
+        key: readPem('agent3-key'),
+        cert: readPem('agent3-cert'),
         proxy: {
-          port: proxyPort
+          port: proxyPort,
+          servername: 'agent3',
+          ca: [ readPem('ca2-cert') ], // ca for proxy server (agent3)
+          rejectUnauthorized: true
           // no certificate for proxy
         }
-      });
+      }, 'agent1');
+
       doRequest('no cert origin', { // invalid
         maxSockets: 1,
+        ca: [ readPem('ca1-cert') ], // ca for origin server (agent1)
+        rejectUnauthorized: true,
         // no certificate for origin server
         proxy: {
           port: proxyPort,
+          servername: 'agent3',
+          ca: [ readPem('ca2-cert') ], // ca for proxy server (agent3)
+          rejectUnauthorized: true,
           // client certification for proxy
-          key: readPem('agent3-key'),
-          cert: readPem('agent3-cert')
+          key: readPem('agent1-key'),
+          cert: readPem('agent1-cert')
         }
-      });
-      doRequest('valid', { // valid
+      }, 'agent1');
+
+      doRequest('invalid proxy server name', { // invalid
         maxSockets: 1,
+        ca: [ readPem('ca1-cert') ], // ca for origin server (agent1)
+        rejectUnauthorized: true,
         // client certification for origin server
-        key: readPem('agent1-key'),
-        cert: readPem('agent1-cert'),
+        key: readPem('agent3-key'),
+        cert: readPem('agent3-cert'),
         proxy: {
           port: proxyPort,
+          ca: [ readPem('ca2-cert') ], // ca for agent3
+          rejectUnauthorized: true,
           // client certification for proxy
-          key: readPem('agent3-key'),
-          cert: readPem('agent3-cert')
+          key: readPem('agent1-key'),
+          cert: readPem('agent1-cert')
+        }
+      }, 'agent1');
+
+      doRequest('invalid origin server name', { // invalid
+        maxSockets: 1,
+        ca: [ readPem('ca1-cert') ], // ca for agent1
+        rejectUnauthorized: true,
+        // client certification for origin server
+        key: readPem('agent3-key'),
+        cert: readPem('agent3-cert'),
+        proxy: {
+          port: proxyPort,
+          servername: 'agent3',
+          ca: [ readPem('ca2-cert') ], // ca for proxy server (agent3)
+          rejectUnauthorized: true,
+          // client certification for proxy
+          key: readPem('agent1-key'),
+          cert: readPem('agent1-cert')
         }
       });
+
+      doRequest('valid', { // valid
+        maxSockets: 1,
+        ca: [ readPem('ca1-cert') ], // ca for origin server (agent1)
+        rejectUnauthorized: true,
+        // client certification for origin server
+        key: readPem('agent3-key'),
+        cert: readPem('agent3-cert'),
+        proxy: {
+          port: proxyPort,
+          servername: 'agent3',
+          ca: [ readPem('ca2-cert') ], // ca for proxy server (agent3)
+          rejectUnauthorized: true,
+          // client certification for proxy
+          key: readPem('agent1-key'),
+          cert: readPem('agent1-cert')
+        }
+      }, 'agent1');
     }
 
     server.on('close', function() {
       serverConnect.should.equal(1);
-      proxyConnect.should.equal(2);
+      proxyConnect.should.equal(3);
       clientConnect.should.equal(1);
-      clientError.should.equal(3);
+      clientError.should.equal(5);
 
       done();
     });
