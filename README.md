@@ -170,3 +170,7 @@ var req = https.request({
   agent: tunnelingAgent
 });
 ```
+
+## License
+
+This module is released under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
