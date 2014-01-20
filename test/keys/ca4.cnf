@@ -9,7 +9,7 @@ output_password        = password
 [ req_distinguished_name ]
 C                      = JP
 OU                     = nodejs_jp
-CN                     = ca2
+CN                     = ca4
 emailAddress           = koichik@improvement.jp
 
 [ req_attributes ]

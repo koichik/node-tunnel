@@ -10,6 +10,14 @@ function readPem(file) {
   return fs.readFileSync(path.join('test/keys', file + '.pem'));
 }
 
+var serverKey = readPem('server1-key');
+var serverCert = readPem('server1-cert');
+var serverCA = readPem('ca1-cert');
+var clientKey = readPem('client1-key');
+var clientCert = readPem('client1-cert');
+var clientCA = readPem('ca3-cert');
+
+
 describe('HTTPS over HTTP', function() {
   it('should finish without error', function(done) {
     var serverPort = 3002;
@@ -24,9 +32,9 @@ describe('HTTPS over HTTP', function() {
     var agent;
 
     server = https.createServer({
-      key: readPem('agent2-key'),
-      cert: readPem('agent2-cert'),
-      ca: [readPem('ca1-cert')], // ca for agent1
+      key: serverKey,
+      cert: serverCert,
+      ca: [clientCA],
       requestCert: true,
       rejectUnauthorized: true
     }, function(req, res) {
@@ -71,9 +79,10 @@ describe('HTTPS over HTTP', function() {
     function setupClient() {
       agent = tunnel.httpsOverHttp({
         maxSockets: poolSize,
-        // client certification for origin server
-        key: readPem('agent1-key'),
-        cert: readPem('agent1-cert'),
+        key: clientKey,
+        cert: clientCert,
+        ca: [serverCA],
+        rejectUnauthorized: true,
         proxy: {
           port: proxyPort
         }

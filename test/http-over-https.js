@@ -10,6 +10,13 @@ function readPem(file) {
   return fs.readFileSync(path.join('test/keys', file + '.pem'));
 }
 
+var proxyKey = readPem('proxy1-key');
+var proxyCert = readPem('proxy1-cert');
+var proxyCA = readPem('ca2-cert');
+var clientKey = readPem('client1-key');
+var clientCert = readPem('client1-cert');
+var clientCA = readPem('ca3-cert');
+
 describe('HTTP over HTTPS', function() {
   it('should finish without error', function(done) {
     var serverPort = 3004;
@@ -34,9 +41,9 @@ describe('HTTP over HTTPS', function() {
 
     function setupProxy() {
       proxy = https.createServer({
-        key: readPem('agent4-key'),
-        cert: readPem('agent4-cert'),
-        ca: [readPem('ca2-cert')], // ca for agent3
+        key: proxyKey,
+        cert: proxyCert,
+        ca: [clientCA],
         requestCert: true,
         rejectUnauthorized: true
       }, function(req, res) {
@@ -74,9 +81,10 @@ describe('HTTP over HTTPS', function() {
         maxSockets: poolSize,
         proxy: {
           port: proxyPort,
-          // client certification for proxy
-          key: readPem('agent3-key'),
-          cert: readPem('agent3-cert')
+          key: clientKey,
+          cert: clientCert,
+          ca: [proxyCA],
+          rejectUnauthorized: true
         }
       });
 

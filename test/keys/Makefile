@@ -1,4 +1,4 @@
-all: agent1-cert.pem agent2-cert.pem agent3-cert.pem agent4-cert.pem ca2-crl.pem
+all: server1-cert.pem server2-cert.pem proxy1-cert.pem proxy2-cert.pem client1-cert.pem client2-cert.pem
 
 
 #
@@ -14,124 +14,144 @@ ca1-cert.pem: ca1.cnf
 #
 ca2-cert.pem: ca2.cnf
 	openssl req -new -x509 -days 9999 -config ca2.cnf -keyout ca2-key.pem -out ca2-cert.pem
-	echo '01' > ca2-serial
-	touch ca2-database.txt
+
+#
+# Create Certificate Authority: ca3
+# ('password' is used for the CA password.)
+#
+ca3-cert.pem: ca3.cnf
+	openssl req -new -x509 -days 9999 -config ca3.cnf -keyout ca3-key.pem -out ca3-cert.pem
+
+#
+# Create Certificate Authority: ca4
+# ('password' is used for the CA password.)
+#
+ca4-cert.pem: ca4.cnf
+	openssl req -new -x509 -days 9999 -config ca4.cnf -keyout ca4-key.pem -out ca4-cert.pem
 
 
 #
-# agent1 is signed by ca1.
+# server1 is signed by ca1.
 #
+server1-key.pem:
+	openssl genrsa -out server1-key.pem 1024
 
-agent1-key.pem:
-	openssl genrsa -out agent1-key.pem
+server1-csr.pem: server1.cnf server1-key.pem
+	openssl req -new -config server1.cnf -key server1-key.pem -out server1-csr.pem
 
-agent1-csr.pem: agent1.cnf agent1-key.pem
-	openssl req -new -config agent1.cnf -key agent1-key.pem -out agent1-csr.pem
-
-agent1-cert.pem: agent1-csr.pem ca1-cert.pem ca1-key.pem
+server1-cert.pem: server1-csr.pem ca1-cert.pem ca1-key.pem
 	openssl x509 -req \
 		-days 9999 \
 		-passin "pass:password" \
-		-in agent1-csr.pem \
+		-in server1-csr.pem \
 		-CA ca1-cert.pem \
 		-CAkey ca1-key.pem \
 		-CAcreateserial \
-		-out agent1-cert.pem
-
-agent1-verify: agent1-cert.pem ca1-cert.pem
-	openssl verify -CAfile ca1-cert.pem agent1-cert.pem
-
+		-out server1-cert.pem
 
 #
-# agent2 has a self signed cert
+# server2 is signed by ca1.
 #
-# Generate new private key
-agent2-key.pem:
-	openssl genrsa -out agent2-key.pem
+server2-key.pem:
+	openssl genrsa -out server2-key.pem 1024
 
-# Create a Certificate Signing Request for the key
-agent2-csr.pem: agent2-key.pem agent2.cnf
-	openssl req -new -config agent2.cnf -key agent2-key.pem -out agent2-csr.pem
+server2-csr.pem: server2.cnf server2-key.pem
+	openssl req -new -config server2.cnf -key server2-key.pem -out server2-csr.pem
 
-# Create a Certificate for the agent.
-agent2-cert.pem: agent2-csr.pem agent2-key.pem
-	openssl x509 -req \
-		-days 9999 \
-		-in agent2-csr.pem \
-		-signkey agent2-key.pem \
-		-out agent2-cert.pem
-
-agent2-verify: agent2-cert.pem
-	openssl verify -CAfile agent2-cert.pem agent2-cert.pem
-
-#
-# agent3 is signed by ca2.
-#
-
-agent3-key.pem:
-	openssl genrsa -out agent3-key.pem
-
-agent3-csr.pem: agent3.cnf agent3-key.pem
-	openssl req -new -config agent3.cnf -key agent3-key.pem -out agent3-csr.pem
-
-agent3-cert.pem: agent3-csr.pem ca2-cert.pem ca2-key.pem
+server2-cert.pem: server2-csr.pem ca1-cert.pem ca1-key.pem
 	openssl x509 -req \
 		-days 9999 \
 		-passin "pass:password" \
-		-in agent3-csr.pem \
-		-CA ca2-cert.pem \
-		-CAkey ca2-key.pem \
+		-in server2-csr.pem \
+		-CA ca1-cert.pem \
+		-CAkey ca1-key.pem \
 		-CAcreateserial \
-		-out agent3-cert.pem
+		-out server2-cert.pem
 
-agent3-verify: agent3-cert.pem ca2-cert.pem
-	openssl verify -CAfile ca2-cert.pem agent3-cert.pem
-
+server2-verify: server2-cert.pem ca1-cert.pem
+	openssl verify -CAfile ca1-cert.pem server2-cert.pem
 
 #
-# agent4 is signed by ca2 (client cert)
+# proxy1 is signed by ca2.
 #
+proxy1-key.pem:
+	openssl genrsa -out proxy1-key.pem 1024
 
-agent4-key.pem:
-	openssl genrsa -out agent4-key.pem
+proxy1-csr.pem: proxy1.cnf proxy1-key.pem
+	openssl req -new -config proxy1.cnf -key proxy1-key.pem -out proxy1-csr.pem
 
-agent4-csr.pem: agent4.cnf agent4-key.pem
-	openssl req -new -config agent4.cnf -key agent4-key.pem -out agent4-csr.pem
-
-agent4-cert.pem: agent4-csr.pem ca2-cert.pem ca2-key.pem
+proxy1-cert.pem: proxy1-csr.pem ca2-cert.pem ca2-key.pem
 	openssl x509 -req \
 		-days 9999 \
 		-passin "pass:password" \
-		-in agent4-csr.pem \
+		-in proxy1-csr.pem \
 		-CA ca2-cert.pem \
 		-CAkey ca2-key.pem \
 		-CAcreateserial \
-		-extfile agent4.cnf \
-		-extensions ext_key_usage \
-		-out agent4-cert.pem
-
-agent4-verify: agent4-cert.pem ca2-cert.pem
-	openssl verify -CAfile ca2-cert.pem agent4-cert.pem
+		-out proxy1-cert.pem
 
 #
-# Make CRL with agent4 being rejected
+# proxy2 is signed by ca2.
 #
-ca2-crl.pem: ca2-key.pem ca2-cert.pem ca2.cnf
-	openssl ca -revoke agent4-cert.pem \
-		-keyfile ca2-key.pem \
-		-cert ca2-cert.pem \
-		-config ca2.cnf
-	openssl ca \
-		-keyfile ca2-key.pem \
-		-cert ca2-cert.pem \
-		-config ca2.cnf \
-		-gencrl \
-		-out ca2-crl.pem
+proxy2-key.pem:
+	openssl genrsa -out proxy2-key.pem 1024
+
+proxy2-csr.pem: proxy2.cnf proxy2-key.pem
+	openssl req -new -config proxy2.cnf -key proxy2-key.pem -out proxy2-csr.pem
+
+proxy2-cert.pem: proxy2-csr.pem ca2-cert.pem ca2-key.pem
+	openssl x509 -req \
+		-days 9999 \
+		-passin "pass:password" \
+		-in proxy2-csr.pem \
+		-CA ca2-cert.pem \
+		-CAkey ca2-key.pem \
+		-CAcreateserial \
+		-out proxy2-cert.pem
+
+proxy2-verify: proxy2-cert.pem ca2-cert.pem
+	openssl verify -CAfile ca2-cert.pem proxy2-cert.pem
+
+#
+# client1 is signed by ca3.
+#
+client1-key.pem:
+	openssl genrsa -out client1-key.pem 1024
+
+client1-csr.pem: client1.cnf client1-key.pem
+	openssl req -new -config client1.cnf -key client1-key.pem -out client1-csr.pem
+
+client1-cert.pem: client1-csr.pem ca3-cert.pem ca3-key.pem
+	openssl x509 -req \
+		-days 9999 \
+		-passin "pass:password" \
+		-in client1-csr.pem \
+		-CA ca3-cert.pem \
+		-CAkey ca3-key.pem \
+		-CAcreateserial \
+		-out client1-cert.pem
+
+#
+# client2 is signed by ca4.
+#
+client2-key.pem:
+	openssl genrsa -out client2-key.pem 1024
+
+client2-csr.pem: client2.cnf client2-key.pem
+	openssl req -new -config client2.cnf -key client2-key.pem -out client2-csr.pem
+
+client2-cert.pem: client2-csr.pem ca4-cert.pem ca4-key.pem
+	openssl x509 -req \
+		-days 9999 \
+		-passin "pass:password" \
+		-in client2-csr.pem \
+		-CA ca4-cert.pem \
+		-CAkey ca4-key.pem \
+		-CAcreateserial \
+		-out client2-cert.pem
+
 
 clean:
-	rm -f *.pem *.srl ca2-database.txt ca2-serial
+	rm -f *.pem *.srl
 
-test: agent1-verify agent2-verify agent3-verify agent4-verify
-
-
-.PHONY: all clean test agent1-verify agent2-verify agent3-verify agent4-verify
+test: client-verify server2-verify proxy1-verify proxy2-verify client-verify

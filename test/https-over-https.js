@@ -10,6 +10,19 @@ function readPem(file) {
   return fs.readFileSync(path.join('test/keys', file + '.pem'));
 }
 
+var serverKey = readPem('server1-key');
+var serverCert = readPem('server1-cert');
+var serverCA = readPem('ca1-cert');
+var proxyKey = readPem('proxy1-key');
+var proxyCert = readPem('proxy1-cert');
+var proxyCA = readPem('ca2-cert');
+var client1Key = readPem('client1-key');
+var client1Cert = readPem('client1-cert');
+var client1CA = readPem('ca3-cert');
+var client2Key = readPem('client2-key');
+var client2Cert = readPem('client2-cert');
+var client2CA = readPem('ca4-cert');
+
 describe('HTTPS over HTTPS', function() {
   it('should finish without error', function(done) {
     var serverPort = 3006;
@@ -24,9 +37,9 @@ describe('HTTPS over HTTPS', function() {
     var agent;
 
     server = https.createServer({
-      key: readPem('agent2-key'),
-      cert: readPem('agent2-cert'),
-      ca: [readPem('ca1-cert')], // ca for agent1
+      key: serverKey,
+      cert: serverCert,
+      ca: [client1CA],
       requestCert: true,
       rejectUnauthorized: true
     }, function(req, res) {
@@ -40,9 +53,9 @@ describe('HTTPS over HTTPS', function() {
 
     function setupProxy() {
       proxy = https.createServer({
-        key: readPem('agent4-key'),
-        cert: readPem('agent4-cert'),
-        ca: [readPem('ca2-cert')], // ca for agent3
+        key: proxyKey,
+        cert: proxyCert,
+        ca: [client2CA],
         requestCert: true,
         rejectUnauthorized: true
       }, function(req, res) {
@@ -77,13 +90,17 @@ describe('HTTPS over HTTPS', function() {
       agent = tunnel.httpsOverHttps({
         maxSockets: poolSize,
         // client certification for origin server
-        key: readPem('agent1-key'),
-        cert: readPem('agent1-cert'),
+        key: client1Key,
+        cert: client1Cert,
+        ca: [serverCA],
+        rejectUnauthroized: true,
         proxy: {
           port: proxyPort,
           // client certification for proxy
-          key: readPem('agent3-key'),
-          cert: readPem('agent3-cert')
+          key: client2Key,
+          cert: client2Cert,
+          ca: [proxyCA],
+          rejectUnauthroized: true
         }
       });
 

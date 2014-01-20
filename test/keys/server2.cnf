@@ -4,12 +4,11 @@ days                   = 9999
 distinguished_name     = req_distinguished_name
 attributes             = req_attributes
 prompt                 = no
-output_password        = password
 
 [ req_distinguished_name ]
 C                      = JP
 OU                     = nodejs_jp
-CN                     = ca2
+CN                     = server2
 emailAddress           = koichik@improvement.jp
 
 [ req_attributes ]
