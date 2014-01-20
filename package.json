@@ -15,7 +15,10 @@
     "type": "The MIT License",
     "url": "http://www.opensource.org/licenses/mit-license.php"
   },
-  "repositories": "https://github.com/koichik/node-tunnel.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koichik/node-tunnel"
+  },
   "engines": {
     "node": ">=0.6.11 <=0.7.0 || >=0.7.3"
   },
