@@ -21,7 +21,7 @@ var req = https.request({
 
 ## Installation
 
-    $ npm install tunnel
+    $ npm install tunnel --save
 
 ## Usages
 
