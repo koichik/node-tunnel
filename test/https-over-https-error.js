@@ -42,14 +42,12 @@ describe('HTTPS over HTTPS authentication failed', function() {
       requestCert: true,
       rejectUnauthorized: true
     }, function(req, res) {
-      tunnel.debug('SERVER: got request', req.url);
       ++serverConnect;
       req.on('data', function(data) {
       });
       req.on('end', function() {
         res.writeHead(200);
         res.end('Hello, ' + serverConnect);
-        tunnel.debug('SERVER: sending response');
       });
       req.resume();
     });
@@ -85,7 +83,6 @@ describe('HTTPS over HTTPS authentication failed', function() {
         ++proxyConnect;
 
         var serverSocket = net.connect(serverPort, function() {
-          tunnel.debug('PROXY: replying to client CONNECT request');
           clientSocket.write('HTTP/1.1 200 Connection established\r\n\r\n');
           clientSocket.pipe(serverSocket);
           serverSocket.write(head);
@@ -101,7 +98,6 @@ describe('HTTPS over HTTPS authentication failed', function() {
 
     function setupClient() {
       function doRequest(name, options, host) {
-        tunnel.debug('CLIENT: Making HTTPS request (%s)', name);
         ++clientRequest;
         var agent = tunnel.httpsOverHttps(options);
         var req = https.get({
@@ -114,7 +110,6 @@ describe('HTTPS over HTTPS authentication failed', function() {
           rejectUnauthorized: true,
           agent: agent
         }, function(res) {
-          tunnel.debug('CLIENT: got HTTPS response (%s)', name);
           ++clientConnect;
           res.on('data', function(data) {
           });
@@ -124,7 +119,6 @@ describe('HTTPS over HTTPS authentication failed', function() {
           res.resume();
         });
         req.on('error', function(err) {
-          tunnel.debug('CLIENT: failed HTTP response (%s)', name, err);
           ++clientError;
           req.emit('finish');
         });

@@ -28,5 +28,8 @@
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha"
+  },
+  "dependencies": {
+    "debug": "~2.2.0"
   }
 }

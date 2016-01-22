@@ -1,5 +1,9 @@
 # node-tunnel - HTTP/HTTPS Agents for tunneling proxies
 
+- [![NPM version](https://badge.fury.io/js/tunnel.png)](http://badge.fury.io/js/tunnel)
+- [![Build Status](https://travis-ci.org/JacksonTian/tunnel.png?branch=master)](https://travis-ci.org/JacksonTian/tunnel)
+- [![Dependencies Status](https://david-dm.org/JacksonTian/tunnel.png)](https://david-dm.org/JacksonTian/tunnel)
+
 ## Example
 
 ```javascript
@@ -21,7 +25,7 @@ var req = https.request({
 
 ## Installation
 
-    $ npm install tunnel
+    $ npm install tunnel --save
 
 ## Usages
 

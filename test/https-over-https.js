@@ -43,11 +43,9 @@ describe('HTTPS over HTTPS', function() {
       requestCert: true,
       rejectUnauthorized: true
     }, function(req, res) {
-      tunnel.debug('SERVER: got request');
       ++serverConnect;
       res.writeHead(200);
       res.end('Hello' + req.url);
-      tunnel.debug('SERVER: sending response');
     });
     server.listen(serverPort, setupProxy);
 
@@ -65,14 +63,12 @@ describe('HTTPS over HTTPS', function() {
       proxy.on('connect', onConnect); // for v0.7 or later
 
       function onConnect(req, clientSocket, head) {
-        tunnel.debug('PROXY: got CONNECT request');
         req.method.should.equal('CONNECT');
         req.url.should.equal('localhost:' + serverPort);
         req.headers.should.not.have.property('transfer-encoding');
         ++proxyConnect;
 
         var serverSocket = net.connect(serverPort, function() {
-          tunnel.debug('PROXY: replying to client CONNECT request');
           clientSocket.write('HTTP/1.1 200 Connection established\r\n\r\n');
           clientSocket.pipe(serverSocket);
           serverSocket.write(head);
@@ -109,13 +105,11 @@ describe('HTTPS over HTTPS', function() {
       }
 
       function doClientRequest(i) {
-        tunnel.debug('CLIENT: Making HTTPS request (%d)', i);
         var req = https.get({
           port: serverPort,
           path: '/' + i,
           agent: agent
         }, function(res) {
-          tunnel.debug('CLIENT: got HTTPS response (%d)', i);
           res.setEncoding('utf8');
           res.on('data', function(data) {
             data.should.equal('Hello/' + i);
@@ -139,7 +133,7 @@ describe('HTTPS over HTTPS', function() {
       var name = 'localhost:' + serverPort;
       agent.sockets.should.be.empty;
       agent.requests.should.be.empty;
-  
+
       done();
     });
   });
