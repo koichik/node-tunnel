@@ -1,5 +1,8 @@
 # Changelog
 
+ - 0.0.4 (2016/01/23)
+   - supported Node v0.12 or later.
+
  - 0.0.3 (2014/01/20)
    - fixed package.json
 

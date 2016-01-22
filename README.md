@@ -171,6 +171,9 @@ var req = https.request({
 });
 ```
 
+## CONTRIBUTORS
+* [Aleksis Brezas (abresas)](https://github.com/abresas)
+
 ## License
 
-This module is released under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
+Licensed under the [MIT](https://github.com/koichik/node-tunnel/blob/master/LICENSE) license.
