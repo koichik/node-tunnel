@@ -1,5 +1,9 @@
 # node-tunnel - HTTP/HTTPS Agents for tunneling proxies
 
+[![Build Status](https://img.shields.io/travis/koichik/node-tunnel.svg?style=flat)](https://travis-ci.org/koichik/node-tunnel)
+[![Dependency Status](http://img.shields.io/david/koichik/node-tunnel.svg?style=flat)](https://david-dm.org/koichik/node-tunnel#info=dependencies)
+[![DevDependency Status](http://img.shields.io/david/dev/koichik/node-tunnel.svg?style=flat)](https://david-dm.org/koichik/node-tunnel#info=devDependencies)
+
 ## Example
 
 ```javascript
