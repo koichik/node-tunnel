@@ -177,6 +177,8 @@ var req = https.request({
 
 ## CONTRIBUTORS
 * [Aleksis Brezas (abresas)](https://github.com/abresas)
+* [Jackson Tian (JacksonTian)](https://github.com/JacksonTian)
+* [Dmitry Sorin (1999)](https://github.com/1999)
 
 ## License
 
