@@ -1,6 +1,6 @@
 {
   "name": "tunnel",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Node HTTP/HTTPS Agents for tunneling proxies",
   "keywords": [
     "http",
@@ -22,7 +22,7 @@
     "url": "https://github.com/koichik/node-tunnel.git"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "mocha"
   },
   "devDependencies": {
     "mocha": "*",

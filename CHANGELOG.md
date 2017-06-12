@@ -1,5 +1,8 @@
 # Changelog
 
+ - 0.0.5 (2017/06/12)
+   - Fix socket leak.
+ 
  - 0.0.4 (2016/01/23)
    - supported Node v0.12 or later.
 
