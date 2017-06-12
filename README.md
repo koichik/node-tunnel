@@ -33,7 +33,7 @@ var req = https.request({
 
 ```javascript
 var tunnelingAgent = tunnel.httpOverHttp({
-  maxSockets: poolSize, // Defaults to 5
+  maxSockets: poolSize, // Defaults to http.Agent.defaultMaxSockets
 
   proxy: { // Proxy settings
     host: proxyHost, // Defaults to 'localhost'
@@ -61,7 +61,7 @@ var req = http.request({
 
 ```javascript
 var tunnelingAgent = tunnel.httpsOverHttp({
-  maxSockets: poolSize, // Defaults to 5
+  maxSockets: poolSize, // Defaults to http.Agent.defaultMaxSockets
 
   // CA for origin server if necessary
   ca: [ fs.readFileSync('origin-server-ca.pem')],
@@ -96,7 +96,7 @@ var req = https.request({
 
 ```javascript
 var tunnelingAgent = tunnel.httpOverHttps({
-  maxSockets: poolSize, // Defaults to 5
+  maxSockets: poolSize, // Defaults to http.Agent.defaultMaxSockets
 
   proxy: { // Proxy settings
     host: proxyHost, // Defaults to 'localhost'
@@ -134,7 +134,7 @@ var req = http.request({
 
 ```javascript
 var tunnelingAgent = tunnel.httpsOverHttps({
-  maxSockets: poolSize, // Defaults to 5
+  maxSockets: poolSize, // Defaults to http.Agent.defaultMaxSockets
 
   // CA for origin server if necessary
   ca: [ fs.readFileSync('origin-server-ca.pem')],
