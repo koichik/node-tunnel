@@ -1,5 +1,11 @@
 # Changelog
 
+ - 0.0.6 (2018/09/11)
+   - Fix `localAddress` not working (#25)
+   - Fix `Host:` header for CONNECT method by @tmurakam (#29, #30)
+   - Fix default port for https (#32)
+   - Fix error handling when the proxy send illegal response body (#33)
+
  - 0.0.5 (2017/06/12)
    - Fix socket leak.
  
